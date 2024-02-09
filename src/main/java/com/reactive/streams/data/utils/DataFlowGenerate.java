@@ -1,5 +1,6 @@
 package com.reactive.streams.data.utils;
 
+import com.google.common.collect.Lists;
 import com.reactive.streams.data.data.DataFlow;
 import lombok.experimental.UtilityClass;
 import net.datafaker.Faker;
@@ -31,14 +32,12 @@ public class DataFlowGenerate {
                 .build();
     }
 
-    public List<DataFlow> generateNDataFlow(Integer itemNumber) {
-        return IntStream.range(0, itemNumber).mapToObj(item -> generateOnDataFlow()).toList();
+    public List<Document> generateNDataFlow(Integer itemNumber) {
+        return IntStream.range(0, itemNumber).mapToObj(item -> fromDataFlowToDocument(generateOnDataFlow())).toList();
     }
 
-    public List<List<DataFlow>> paritionList(List<DataFlow> dataFlows, Integer chunkSize) {
-        AtomicInteger counter = new AtomicInteger();
-        return dataFlows.stream().collect(Collectors.groupingBy(it -> counter.getAndIncrement()/chunkSize))
-                .values().stream().toList();
+    public List<List<Document>> paritionList(List<Document> dataFlows, Integer chunkSize) {
+        return Lists.partition(dataFlows, chunkSize);
     }
 
     public Document fromDataFlowToDocument(DataFlow dataFlow) {
