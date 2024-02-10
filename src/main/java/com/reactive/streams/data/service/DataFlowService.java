@@ -3,7 +3,6 @@ package com.reactive.streams.data.service;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
-import com.reactive.streams.data.utils.DataFlowGenerate;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.reactive.streams.data.utils.DataFlowGenerate.fromDataFlowToDocument;
-import static com.reactive.streams.data.utils.DataFlowGenerate.generateOnDataFlow;
-import static com.reactive.streams.data.utils.SubscriberHelpers.ObservableSubscriber;
+import static com.reactive.streams.data.utils.DataFlowGenerate.*;
+import static com.reactive.streams.data.utils.SubscriberHelpers.*;
 
 @Service
 @Slf4j
@@ -37,20 +35,20 @@ public class DataFlowService {
     }
 
     public Integer generate10K() throws Throwable {
-        return generateNDataFlow(10_000);
+        return generateNDataFlowService(10_000);
     }
 
     public Integer generate100K() throws Throwable {
-        return generateNDataFlow(100_000);
+        return generateNDataFlowService(100_000);
     }
 
     public Integer generate1M() throws Throwable {
-        return generateNDataFlow(1_000_000);
+        return generateNDataFlowService(1_000_000);
     }
 
-    private Integer generateNDataFlow(Integer number) throws Throwable {
+    private Integer generateNDataFlowService(Integer number) throws Throwable {
         AtomicInteger atomicInt = new AtomicInteger(0);
-        DataFlowGenerate.paritionList(DataFlowGenerate.generateNDataFlow(number), 5000)
+        paritionList(generateNDataFlow(number), 5000)
                 .forEach(item -> {
                     CompletableFuture.runAsync(() -> {
                         ObservableSubscriber<InsertManyResult> subscriber = new ObservableSubscriber<>();
@@ -60,7 +58,7 @@ public class DataFlowService {
                         } catch (Throwable e) {
                             throw new RuntimeException(e);
                         }
-                    });
+                    }, executor);
                 });
 
         return number;

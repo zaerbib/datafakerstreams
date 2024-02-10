@@ -1,2 +1,11 @@
 server:
   port: 8089
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+mongock:
+  migration-scan-package:
+    - com.reactive.streams.data.changelogs
+  transaction-strategy: CHANGE_UNIT

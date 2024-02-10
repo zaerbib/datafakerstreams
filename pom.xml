@@ -13,9 +13,24 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>DataFaker Reactive Streams</name>
 	<description>Demo DataFaker Reactive Streams</description>
+
 	<properties>
 		<java.version>21</java.version>
+		<mongock.version>5.3.6</mongock.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.mongock</groupId>
+				<artifactId>mongock-bom</artifactId>
+				<version>${mongock.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -38,6 +53,18 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-core</artifactId>
 			<version>4.1.2</version>
+		</dependency>
+
+		<!-- MONGOCK RUNNER -->
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongock-springboot-v3</artifactId>
+		</dependency>
+
+		<!-- MONGOCK DRIVER -->
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongodb-reactive-driver</artifactId>
 		</dependency>
 
 		<dependency>
