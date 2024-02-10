@@ -8,4 +8,5 @@ spring:
 mongock:
   migration-scan-package:
     - com.reactive.streams.data.changelogs
-  transaction-strategy: CHANGE_UNIT
+  transaction-enabled: false
+  #transaction-strategy: EXECUTION

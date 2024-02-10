@@ -95,8 +95,8 @@ public final class SubscriberHelpers {
         @Getter
         private volatile boolean completed;
 
-        public ListObservableSubscriber(List<Document> received) {
-            this.received = received;
+        public ListObservableSubscriber() {
+            this.received = new ArrayList<>();
             this.errors = new ArrayList<>();
             this.latch = new CountDownLatch(1);
         }

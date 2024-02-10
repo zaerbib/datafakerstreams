@@ -2,8 +2,10 @@ package com.reactive.streams.data.data;
 
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
+import org.bson.codecs.pojo.annotations.BsonId;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @Jacksonized
 public class DataFlow {
 
+    private String uniqueId;
     private Double open;
     private Double close;
     private Double volume;

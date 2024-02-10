@@ -6,17 +6,14 @@ import com.mongodb.reactivestreams.client.MongoDatabase;
 import io.mongock.driver.api.driver.ConnectionDriver;
 import io.mongock.driver.mongodb.reactive.driver.MongoReactiveDriver;
 import io.mongock.runner.springboot.EnableMongock;
-import io.mongock.runner.springboot.MongockSpringboot;
-import io.mongock.runner.springboot.base.MongockApplicationRunner;
 import org.bson.Document;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @EnableMongock
 @SpringBootApplication
@@ -37,16 +34,8 @@ public class DataFakerReactiveStreamsApplication {
     }
 
     @Bean
-    @Qualifier("fakerExecution")
     public Executor executor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(500);
-        executor.setMaxPoolSize(1000);
-        executor.setQueueCapacity(5000);
-        executor.setThreadNamePrefix("faker-");
-        executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.initialize();
-        return executor;
+        return Executors.newVirtualThreadPerTaskExecutor();
     }
 
     @Bean

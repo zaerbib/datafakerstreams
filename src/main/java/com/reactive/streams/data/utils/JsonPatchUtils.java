@@ -24,7 +24,7 @@ public class JsonPatchUtils {
     }
 
     @NotNull
-    public static <T> T applyJsonPatch(@NotNull ObjectMapper objectMapper,
+    private static <T> T applyJsonPatch(@NotNull ObjectMapper objectMapper,
                                        @NotNull T originalObject,
                                        @NotNull String patchJson,
                                        @NotNull JavaType targertType) {
@@ -52,7 +52,7 @@ public class JsonPatchUtils {
     }
 
     @NotNull
-    public static <T> T applyJsonMergePatch(@NotNull ObjectMapper objectMapper,
+    private static <T> T applyJsonMergePatch(@NotNull ObjectMapper objectMapper,
                                             @NotNull T originalObject,
                                             @NotNull String mergePatchJson,
                                             @NotNull JavaType targetType) {
