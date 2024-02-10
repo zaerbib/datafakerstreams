@@ -12,12 +12,17 @@ import org.springframework.context.annotation.Configuration;
 public class MongodbConfig {
 
     @Bean
-    public MongoDatabase mongoClient() {
+    public MongoDatabase mongoDatabase() {
+        MongoClient client = mongoClient();
+        return client.getDatabase("datafakerdb");
+    }
+
+    @Bean
+    public MongoClient mongoClient() {
         ConnectionString connectionString = new ConnectionString("mongodb+srv://zaerbib:admin@tuto-cluster-1.vlw5dws.mongodb.net/datafakerdb?retryWrites=true&w=majority");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
-        MongoClient client = MongoClients.create(settings);
-        return client.getDatabase("datafakerdb");
+        return MongoClients.create(settings);
     }
 }
