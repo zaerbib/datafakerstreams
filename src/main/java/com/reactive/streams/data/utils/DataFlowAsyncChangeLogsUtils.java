@@ -1,7 +1,9 @@
 package com.reactive.streams.data.utils;
 
 import com.mongodb.bulk.BulkWriteResult;
+import com.mongodb.client.model.UpdateManyModel;
 import com.mongodb.client.model.UpdateOneModel;
+import com.mongodb.client.result.UpdateResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.reactive.streams.data.utils.DataFlowGenerate.paritionList;
 import static com.reactive.streams.data.utils.SubscriberHelpers.ListObservableSubscriber;
@@ -26,14 +29,21 @@ public class DataFlowAsyncChangeLogsUtils {
             = new ListObservableSubscriber<Document>();
     private static final ObservableSubscriber<BulkWriteResult> observaleSubscriber
             = new ObservableSubscriber<>();
-
+    private static final ObservableSubscriber<UpdateResult> observaleSubscriberUpdateMany
+            = new ObservableSubscriber<>();
     public void doDataFlowAsyncChange(MongoCollection<Document> collection,
                                       Executor executor,
                                       Function<Document, UpdateOneModel<Document>> update) throws Throwable {
         changeUnitAsyncVersion(collection, executor, update);
     }
 
-    public void changeUnitAsyncVersion(MongoCollection<Document> collection,
+    public void doDataFlowUpdateMany(MongoCollection<Document> collection,
+                                     Supplier<Document> filterField,
+                                     Supplier<Document> update) throws Throwable {
+         changeUnitUpdateMany(collection, filterField, update);
+    }
+
+    private void changeUnitAsyncVersion(MongoCollection<Document> collection,
                                        Executor executor,
                                        Function<Document, UpdateOneModel<Document>> update) throws Throwable {
         collection.find(new Document()).subscribe(listSubscriber);
@@ -53,5 +63,12 @@ public class DataFlowAsyncChangeLogsUtils {
                         throw new RuntimeException(e);
                     }
                 });
+    }
+
+    private void changeUnitUpdateMany(MongoCollection<Document> collection,
+                                     Supplier<Document> filterField,
+                                     Supplier<Document> update) throws Throwable {
+        collection.updateMany(filterField.get(), update.get()).subscribe(observaleSubscriberUpdateMany);
+        log.info("Update result : " +observaleSubscriberUpdateMany.get(300, TimeUnit.SECONDS));
     }
 }

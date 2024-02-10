@@ -29,10 +29,18 @@ public class UpdateBenefChange {
                                 Executor executor) throws Throwable {
         // think about it
     }
+
     @Execution
     public void changeSet(MongoCollection<Document> collection,
                           Executor executor) throws Throwable {
-        doDataFlowAsyncChange(collection, executor, this::updateBenefField);
+        //doDataFlowAsyncChange(collection, executor, this::updateBenefField);
+        doDataFlowUpdateMany(collection,
+                () -> new Document("benef", null),
+                () -> new Document("$set", new Document("benef", benefToDoc(Benef.builder()
+                        .invest(0.0)
+                        .diff(0.0)
+                        .state("normal")
+                        .build()))));
     }
 
     @RollbackExecution
@@ -69,4 +77,11 @@ public class UpdateBenefChange {
                         new Document("benef", document.get("benef"))));
 
     }
+
+    private Document benefToDoc(Benef benef) {
+        return new Document("invest", benef.getInvest())
+                .append("diff", benef.getDiff())
+                .append("state", benef.getState());
+    }
+
 }
