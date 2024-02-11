@@ -19,7 +19,8 @@ public class MongodbConfig {
 
     @Bean
     public MongoClient mongoClient() {
-        ConnectionString connectionString = new ConnectionString("mongodb+srv://zaerbib:admin@tuto-cluster-1.vlw5dws.mongodb.net/datafakerdb?retryWrites=true&w=majority");
+        //ConnectionString connectionString = new ConnectionString("mongodb+srv://zaerbib:admin@tuto-cluster-1.vlw5dws.mongodb.net/datafakerdb?retryWrites=true&w=majority");
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/datafakerdb?retryWrites=true&w=majority");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();

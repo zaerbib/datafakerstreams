@@ -84,6 +84,69 @@ public final class SubscriberHelpers {
         }
     }
 
+    public class ListObservableSubscriber<Document> implements Subscriber<Document> {
+
+        @Getter
+        private final List<Document> received;
+        private final List<Throwable> errors;
+        private final CountDownLatch latch;
+        @Getter
+        private volatile Subscription subscription;
+        @Getter
+        private volatile boolean completed;
+
+        public ListObservableSubscriber() {
+            this.received = new ArrayList<>();
+            this.errors = new ArrayList<>();
+            this.latch = new CountDownLatch(1);
+        }
+
+
+        @Override
+        public void onSubscribe(Subscription subscription) {
+            this.subscription = subscription;
+        }
+
+        @Override
+        public void onNext(Document document) {
+            this.received.add(document);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            this.errors.add(throwable);
+            onComplete();
+        }
+
+        @Override
+        public void onComplete() {
+            this.completed = true;
+            this.latch.countDown();
+        }
+
+        public Throwable getError() {
+            if (!this.errors.isEmpty()) {
+                return errors.get(0);
+            }
+            return null;
+        }
+
+        public List<Document> get(final long timeout, final TimeUnit unit) throws Throwable {
+            return await(timeout, unit).getReceived();
+        }
+
+        public ListObservableSubscriber<Document> await(final long timeout, final TimeUnit unit) throws Throwable {
+            subscription.request(Integer.MAX_VALUE);
+            if (!latch.await(timeout, unit)) {
+                throw new MongoTimeoutException("Publisher onComplete timed out");
+            }
+            if (!errors.isEmpty()) {
+                throw errors.get(0);
+            }
+            return this;
+        }
+    }
+
     public class OperationSubscriber<T> extends ObservableSubscriber<T> {
         public OperationSubscriber(){
             super();

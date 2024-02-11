@@ -9,6 +9,7 @@ import org.bson.Document;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -18,6 +19,7 @@ public class DataFlowGenerate {
 
     public DataFlow generateOnDataFlow() {
         return DataFlow.builder()
+                .uniqueId(UUID.randomUUID().toString())
                 .open(faker.number().randomDouble(2, 90, 200))
                 .close(faker.number().randomDouble(2, 90, 200))
                 .volume(faker.number().randomDouble(0, 1000, 1000000))
@@ -34,12 +36,13 @@ public class DataFlowGenerate {
         return IntStream.range(0, itemNumber).mapToObj(item -> fromDataFlowToDocument(generateOnDataFlow())).toList();
     }
 
-    public List<List<Document>> paritionList(List<Document> dataFlows, Integer chunkSize) {
+    public <T> List<List<T>> paritionList(List<T> dataFlows, Integer chunkSize) {
         return Lists.partition(dataFlows, chunkSize);
     }
 
     public Document fromDataFlowToDocument(DataFlow dataFlow) {
-        return new Document("open", dataFlow.getOpen())
+        return new Document("uniqueId", dataFlow.getUniqueId())
+                .append("open", dataFlow.getOpen())
                 .append("close", dataFlow.getClose())
                 .append("volume", dataFlow.getVolume())
                 .append("splitFactor", dataFlow.getSplitFactor())
