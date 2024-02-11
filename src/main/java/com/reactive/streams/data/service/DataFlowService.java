@@ -1,5 +1,6 @@
 package com.reactive.streams.data.service;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.reactivestreams.client.MongoCollection;
@@ -44,6 +45,12 @@ public class DataFlowService {
 
     public Integer generate1M() throws Throwable {
         return generateNDataFlowService(1_000_000);
+    }
+
+    public DeleteResult deleteAll() throws Throwable {
+        ObservableSubscriber<DeleteResult> subscriber = new ObservableSubscriber<>();
+        collection.deleteMany(new Document()).subscribe(subscriber);
+        return subscriber.get(300, TimeUnit.SECONDS).getFirst();
     }
 
     private Integer generateNDataFlowService(Integer number) throws Throwable {
