@@ -23,7 +23,6 @@ public class UpdateBenefChange {
 
 
     @Execution
-    @SuppressWarnings("unused")
     public void changeSet(MongoCollection<Document> collection,
                           Executor executor) throws Throwable {
         /* when update many */
@@ -42,7 +41,6 @@ public class UpdateBenefChange {
     }
 
     @RollbackExecution
-    @SuppressWarnings("unused")
     public void rollBackExecution(MongoCollection<Document> collection) {
         // think about it
     }
@@ -75,7 +73,6 @@ public class UpdateBenefChange {
                         new Document("benef", document.get("benef")));
     }
 
-    @SuppressWarnings("unused")
     private Document benefToDoc(Benef benef) {
         return new Document("invest", benef.getInvest())
                 .append("diff", benef.getDiff())
